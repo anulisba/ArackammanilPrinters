@@ -1,11 +1,10 @@
-// src/components/LandingPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './LandingPage.css';
 import Header from './Header';
-import bg1 from '../assets/bg.jpg'
-import bg2 from '../assets/bg1.jpg'
-import bg3 from '../assets/bg2.jpg'
+import bg1 from '../assets/bg.jpg';
+import bg2 from '../assets/bg1.jpg';
+import bg3 from '../assets/bg2.jpg';
 import AboutUs from './AboutUs';
 import OurServices from './Services';
 import ReportCounter from './ReportCounter';
@@ -13,12 +12,13 @@ import ProjectSection from './ProjectSection';
 import OurWorkFlow from './OurServices';
 import CustomerReviews from './CustomerReviews';
 import Footer from './Footer';
-import { FaInstagram, FaWhatsapp, FaFacebookF, FaEnvelope } from "react-icons/fa";
+import { FaInstagram, FaWhatsapp, FaFacebookF, FaEnvelope, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import ContactLandingSection from './ContactLanding';
 import logo from '../assets/logoar.png';
 import { useNavigate } from 'react-router-dom';
 import { FaPaperPlane } from 'react-icons/fa';
 import emailjs from 'emailjs-com';
+
 const SplashScreen = ({ onComplete }) => {
     const [step, setStep] = useState(0);
 
@@ -282,15 +282,106 @@ const ContactPopup = ({ onClose }) => {
     );
 };
 
-
 const LandingPage = () => {
-    const [showSplash, setShowSplash] = useState(false);
-    const [showContent, setShowContent] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [showPopup, setShowPopup] = useState(false);
-    const images = ["https://res.cloudinary.com/dpo91btlc/image/upload/v1751268325/business-success-with-modern-technology-equipment-generated-by-ai_ivoojl.jpg",
-        "https://res.cloudinary.com/dpo91btlc/image/upload/v1751268284/women-holding-paper-side-view_g3ddn9.jpg"];
-    const navigate = useNavigate();
+    const [currentAdIndex, setCurrentAdIndex] = useState(0);
+    const categoriesTrackRef = useRef(null);
+
+    const adImages = [
+        "https://res.cloudinary.com/dpo91btlc/image/upload/v1751268325/business-success-with-modern-technology-equipment-generated-by-ai_ivoojl.jpg",
+        "https://res.cloudinary.com/dpo91btlc/image/upload/v1751268284/women-holding-paper-side-view_g3ddn9.jpg",
+        "https://res.cloudinary.com/dpo91btlc/image/upload/v1751279365/Need_high-quality_printing_services_in_Irvine_hj7uya.jpg"
+    ];
+
+    const categories = [
+        {
+            id: 1,
+            name: 'ID Cards',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757001946/Gemini_Generated_Image_uj4tu4uj4tu4uj4t_csyfa6.png'
+        },
+        {
+            id: 2,
+            name: 'Balloon Printing',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757003820/Gemini_Generated_Image_ugvewmugvewmugve_mibcaq.png'
+        },
+        {
+            id: 3,
+            name: 'Sign Boards',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757003619/Gemini_Generated_Image_h6c8mph6c8mph6c8_sxsxgc.png'
+        },
+        {
+            id: 4,
+            name: 'Banners',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002389/Gemini_Generated_Image_dl7litdl7litdl7l_zrnnjv.png'
+        },
+        {
+            id: 5,
+            name: 'Umbrella Printing',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002396/Gemini_Generated_Image_1i863t1i863t1i86_ztgg8v.png'
+        },
+        {
+            id: 6,
+            name: 'T-Shirt Printing',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002388/Gemini_Generated_Image_hcp782hcp782hcp7_ucv93r.png'
+        },
+        {
+            id: 7,
+            name: 'Box Printing',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002393/Gemini_Generated_Image_pgjmvypgjmvypgjm_zuostu.png'
+        },
+        {
+            id: 8,
+            name: 'Wedding Cards',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002393/Gemini_Generated_Image_3q85333q85333q85_kpn6ks.png'
+        },
+        {
+            id: 9,
+            name: 'Visiting Card',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002391/Gemini_Generated_Image_vdl9lhvdl9lhvdl9_qjzdp7.png'
+        },
+        {
+            id: 10,
+            name: 'Rubber Stamp',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002402/Gemini_Generated_Image_h3gndch3gndch3gn_qm0mxh.png'
+        },
+        {
+            id: 11,
+            name: 'Flex Printing',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002398/Gemini_Generated_Image_9sjeej9sjeej9sje_hxhwcs.png'
+        },
+        {
+            id: 12,
+            name: 'Notice and Posters',
+            image: 'https://res.cloudinary.com/dpo91btlc/image/upload/v1757002394/Gemini_Generated_Image_ypfn9aypfn9aypfn_bnes9e.png'
+        }
+    ];
+
+
+
+    useEffect(() => {
+        const adInterval = setInterval(() => {
+            setCurrentAdIndex((prev) => (prev + 1) % adImages.length);
+        }, 5000);
+
+        return () => clearInterval(adInterval);
+    }, []);
+
+    const scrollLeft = () => {
+        if (categoriesTrackRef.current) {
+            categoriesTrackRef.current.scrollBy({
+                left: -250,
+                behavior: "smooth",
+            });
+        }
+    };
+
+    const scrollRight = () => {
+        if (categoriesTrackRef.current) {
+            categoriesTrackRef.current.scrollBy({
+                left: 250,
+                behavior: "smooth",
+            });
+        }
+    };
 
     const contactus = () => {
         const message = "Hello, I am interested in your printing services.";
@@ -298,162 +389,84 @@ const LandingPage = () => {
         window.open(whatsappURL, '_blank');
     };
 
-    useEffect(() => {
-        const hasSeenSplash = localStorage.getItem('hasSeenSplash');
-        if (!hasSeenSplash) {
-            setShowSplash(true);
-        } else {
-            setShowSplash(false);
-            // Don't set showContent here - will be handled by the next useEffect
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!showSplash) {
-            // Set showContent to true only when splash screen is hidden
-            setShowContent(true);
-
-            const interval = setInterval(() => {
-                setCurrentIndex((prev) => (prev + 1) % images.length);
-            }, 5000);
-
-            return () => clearInterval(interval);
-        }
-    }, [showSplash]);
-
-    useEffect(() => {
-        if (showContent) {
-            const popupShown = localStorage.getItem('popupShown');
-            if (!popupShown) {
-                const popupTimer = setTimeout(() => {
-                    setShowPopup(true);
-                    localStorage.setItem('popupShown', 'true');
-                }, 15000);
-
-                return () => clearTimeout(popupTimer);
-            }
-        }
-    }, [showContent]);
-
-    useEffect(() => {
-        const clearOnExit = () => {
-            localStorage.removeItem('hasSeenSplash');
-            localStorage.removeItem('popupShown');
-        };
-
-        window.addEventListener('beforeunload', clearOnExit);
-        return () => {
-            window.removeEventListener('beforeunload', clearOnExit);
-        };
-    }, []);
-
-    const handleSplashComplete = () => {
-        setShowSplash(false);
-        localStorage.setItem('hasSeenSplash', 'true'); // important fix
-    };
-
     return (
         <div className="app-container">
-            <AnimatePresence mode="wait">
-                {showSplash ? (
-                    <SplashScreen onComplete={handleSplashComplete} />
-                ) : (
-                    <motion.div
-                        className="landing-page-container"
-                        initial={{ y: "100vh" }}
-                        animate={{ y: 0 }}
-                        exit={{ y: "-100vh" }}
-                        transition={{ duration: 3, ease: [0.10, 1, 0.36, 1] }}
-                    >
-                        {showContent && (
-                            <>
-                                <section id="home">
-                                    <div className="landing-page">
-                                        <Header />
-                                        <AnimatePresence mode="wait">
-                                            <motion.div
-                                                key={currentIndex}
-                                                className="landing-background-image"
-                                                style={{ backgroundImage: `url(${images[currentIndex]})` }}
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                exit={{ opacity: 0 }}
-                                                transition={{ duration: 1 }}
-                                            />
-                                        </AnimatePresence>
+            <Header />
 
-                                        <div className="landing-loverlay" />
+            {/* Advertisement Carousel (Half-screen height) */}
+            <section className="ad-carousel-section">
+                <div className="ad-carousel-container">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentAdIndex}
+                            className="ad-carousel-item"
+                            style={{ backgroundImage: `url(${adImages[currentAdIndex]})` }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <div className="ad-overlay" />
+                            <div className="ad-content">
+                                <h2>Premium Printing Solutions</h2>
+                                <p>Transform your ideas into stunning printed materials</p>
+                                <button onClick={contactus} className="ad-cta-btn">
+                                    Contact Us
+                                </button>
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
 
-                                        <motion.div
-                                            initial={{ y: "100%", opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{ duration: 2 }}
-                                            className="landing-hero"
-                                        >
-                                            <div className="landing-hero-content">
-                                                <h1 className='landing-hero-content-h1'>Arackamannil Printers</h1>
-                                                <p>
-                                                    Printing is not just what we do — it's how we bring your ideas to life.<br />
-                                                    With decades of expertise and cutting-edge technology, we deliver more than ink on paper we deliver trust, quality, and creativity with every print.
-                                                </p>
-                                                <button className="landing-contact-btn" onClick={contactus}>
-                                                    Contact Us
-                                                    <div className="landing-btn-hover-effect"></div>
-                                                </button>
-                                            </div>
-                                        </motion.div>
+                    <div className="ad-indicators">
+                        {adImages.map((_, index) => (
+                            <button
+                                key={index}
+                                className={`ad-indicator ${currentAdIndex === index ? 'active' : ''}`}
+                                onClick={() => setCurrentAdIndex(index)}
+                                aria-label={`Go to slide ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Categories Section - Full Width with Images */}
+            {/* Categories Section - Horizontal Scroll */}
+            <section className="categories-section">
+                <div className="categories-header">
+                    <div className='our-service-title'>
+                        <h2>Explore all categories</h2>
+                        <div className="our-service-line-heading" />
+                    </div>
+                </div>
+
+                <div className="categories-carousel">
+                    <button className="carousel-btn left-btn" onClick={scrollLeft}>
+                        ‹
+                    </button>
+
+                    <div className="categories-track" ref={categoriesTrackRef}>
+                        {categories.map((category) => (
+                            <div key={category.id} className="category-circle">
+                                <div className="circle-image">
+                                    <img src={category.image} alt={category.name} />
+                                </div>
+                                <p>{category.name}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <button className="carousel-btn right-btn" onClick={scrollRight}>›</button>
+                </div>
+            </section>
+
+            <AboutUs />
+
+            <OurServices />
+            <ContactLandingSection />
+            <Footer />
 
 
-                                        <motion.div
-                                            initial={{ y: "100%", opacity: 0 }}
-                                            animate={{ y: 0, opacity: 1 }}
-                                            transition={{ duration: 2 }}
-                                            className="landing-social"
-                                        >
-                                            <div className="landing-social-icons">
-                                                <a href="https://www.instagram.com/arackamannil_printers?igsh=aG51OW82YmU2MG50" target="_blank" rel="noopener noreferrer">
-                                                    <FaInstagram className="landing-icon" />
-                                                </a>
-                                                <a href="mailto:arackamannilranny@gmail.com">
-                                                    <FaEnvelope className="landing-icon" />
-                                                </a>
-                                                <a href="https://www.facebook.com/ArackamannilPrinters?sfnsn=wa" target="_blank" rel="noopener noreferrer">
-                                                    <FaFacebookF className="landing-icon" />
-                                                </a>
-
-                                            </div>
-                                        </motion.div>
-                                    </div>
-                                </section>
-                                <section id='about-us'>
-                                    <AboutUs />
-                                </section>
-                                <OurServices />
-                                {/* <section id='projects'>
-                                    <ProjectSection />
-                                </section> */}
-                                {/* <section id='workflow'>
-                                    <OurWorkFlow />
-                                </section> */}
-                                <section id='reviews'>
-                                    <CustomerReviews />
-                                </section>
-                                <section id='contact'>
-                                    <ContactLandingSection />
-                                </section>
-                                <section id='footer'>
-                                    <Footer />
-                                </section>
-                            </>
-                        )}
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            <AnimatePresence>
-                {showPopup && (
-                    <ContactPopup onClose={() => setShowPopup(false)} />
-                )}
-            </AnimatePresence>
         </div>
     );
 };
