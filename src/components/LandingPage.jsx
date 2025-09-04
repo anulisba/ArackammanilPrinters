@@ -408,8 +408,8 @@ const LandingPage = () => {
                         >
                             <div className="ad-overlay" />
                             <div className="ad-content">
-                                <h2>Premium Printing Solutions</h2>
-                                <p>Transform your ideas into stunning printed materials</p>
+                                <h2>Arackamannil Printers</h2>
+                                <p>Your trusted partner for high-quality printing and design solutions.</p>
                                 <button onClick={contactus} className="ad-cta-btn">
                                     Contact Us
                                 </button>
