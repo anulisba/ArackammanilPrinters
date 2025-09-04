@@ -285,7 +285,18 @@ const ContactPopup = ({ onClose }) => {
 const LandingPage = () => {
     const [currentAdIndex, setCurrentAdIndex] = useState(0);
     const categoriesTrackRef = useRef(null);
+    const [showSplash, setShowSplash] = useState(true);
+    const [showPopup, setShowPopup] = useState(false);
 
+    useEffect(() => {
+        // After splash completes, show popup
+        if (!showSplash) {
+            const popupTimer = setTimeout(() => {
+                setShowPopup(true);
+            }, 1500); // show popup 1.5s after splash ends
+            return () => clearTimeout(popupTimer);
+        }
+    }, [showSplash]);
     const adImages = [
         "https://res.cloudinary.com/dpo91btlc/image/upload/v1751268325/business-success-with-modern-technology-equipment-generated-by-ai_ivoojl.jpg",
         "https://res.cloudinary.com/dpo91btlc/image/upload/v1751268284/women-holding-paper-side-view_g3ddn9.jpg",
@@ -391,82 +402,94 @@ const LandingPage = () => {
 
     return (
         <div className="app-container">
-            <Header />
+            <AnimatePresence>
+                {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+            </AnimatePresence>
 
-            {/* Advertisement Carousel (Half-screen height) */}
-            <section className="ad-carousel-section">
-                <div className="ad-carousel-container">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={currentAdIndex}
-                            className="ad-carousel-item"
-                            style={{ backgroundImage: `url(${adImages[currentAdIndex]})` }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <div className="ad-overlay" />
-                            <div className="ad-content">
-                                <h2>Arackamannil Printers</h2>
-                                <p>Your trusted partner for high-quality printing and design solutions.</p>
-                                <button onClick={contactus} className="ad-cta-btn">
-                                    Contact Us
-                                </button>
+            <AnimatePresence>
+                {showPopup && <ContactPopup onClose={() => setShowPopup(false)} />}
+            </AnimatePresence>
+
+            {/* Main site */}
+            {!showSplash && (
+                <>
+                    <Header />
+
+                    {/* Advertisement Carousel (Half-screen height) */}
+                    <section className="ad-carousel-section">
+                        <div className="ad-carousel-container">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentAdIndex}
+                                    className="ad-carousel-item"
+                                    style={{ backgroundImage: `url(${adImages[currentAdIndex]})` }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.5 }}
+                                >
+                                    <div className="ad-overlay" />
+                                    <div className="ad-content">
+                                        <h2>Arackamannil Printers</h2>
+                                        <p>Your trusted partner for high-quality printing and design solutions.</p>
+                                        <button onClick={contactus} className="ad-cta-btn">
+                                            Contact Us
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
+
+                            <div className="ad-indicators">
+                                {adImages.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        className={`ad-indicator ${currentAdIndex === index ? 'active' : ''}`}
+                                        onClick={() => setCurrentAdIndex(index)}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
                             </div>
-                        </motion.div>
-                    </AnimatePresence>
+                        </div>
+                    </section>
 
-                    <div className="ad-indicators">
-                        {adImages.map((_, index) => (
-                            <button
-                                key={index}
-                                className={`ad-indicator ${currentAdIndex === index ? 'active' : ''}`}
-                                onClick={() => setCurrentAdIndex(index)}
-                                aria-label={`Go to slide ${index + 1}`}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Categories Section - Full Width with Images */}
-            {/* Categories Section - Horizontal Scroll */}
-            <section className="categories-section">
-                <div className="categories-header">
-                    <div className='our-service-title'>
-                        <h2>Explore all categories</h2>
-                        <div className="our-service-line-heading" />
-                    </div>
-                </div>
-
-                <div className="categories-carousel">
-                    <button className="carousel-btn left-btn" onClick={scrollLeft}>
-                        ‹
-                    </button>
-
-                    <div className="categories-track" ref={categoriesTrackRef}>
-                        {categories.map((category) => (
-                            <div key={category.id} className="category-circle">
-                                <div className="circle-image">
-                                    <img src={category.image} alt={category.name} />
-                                </div>
-                                <p>{category.name}</p>
+                    {/* Categories Section - Full Width with Images */}
+                    {/* Categories Section - Horizontal Scroll */}
+                    <section className="categories-section">
+                        <div className="categories-header">
+                            <div className='our-service-title'>
+                                <h2>Explore all categories</h2>
+                                <div className="our-service-line-heading" />
                             </div>
-                        ))}
-                    </div>
+                        </div>
 
-                    <button className="carousel-btn right-btn" onClick={scrollRight}>›</button>
-                </div>
-            </section>
+                        <div className="categories-carousel">
+                            <button className="carousel-btn left-btn" onClick={scrollLeft}>
+                                ‹
+                            </button>
 
-            <AboutUs />
+                            <div className="categories-track" ref={categoriesTrackRef}>
+                                {categories.map((category) => (
+                                    <div key={category.id} className="category-circle">
+                                        <div className="circle-image">
+                                            <img src={category.image} alt={category.name} />
+                                        </div>
+                                        <p>{category.name}</p>
+                                    </div>
+                                ))}
+                            </div>
 
-            <OurServices />
-            <ContactLandingSection />
-            <Footer />
+                            <button className="carousel-btn right-btn" onClick={scrollRight}>›</button>
+                        </div>
+                    </section>
 
+                    <AboutUs />
 
+                    <OurServices />
+                    <ContactLandingSection />
+                    <Footer />
+
+                </>
+            )}
         </div>
     );
 };
