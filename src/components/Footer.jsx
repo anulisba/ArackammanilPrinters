@@ -57,8 +57,8 @@ const Footer = () => {
                                         </svg>
                                         <div>
                                             <span className="contact-label">Address</span>
-                                            <span className="contact-value">P.O., Ranny, Near Valiyapalam</span>
-                                            <span className="contact-value">Mamukku Pazhavangadi, Ranni</span>
+                                            <span className="contact-value">Near Valiyapalam</span>
+                                            <span className="contact-value">Mamukku Pazhavangadi(PO), Ranni</span>
                                             <span className="contact-value">Kerala 689673</span>
                                         </div>
                                     </li>
